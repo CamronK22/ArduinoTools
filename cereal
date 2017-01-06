@@ -1,0 +1,62 @@
+#!/usr/bin/python3
+
+import serial
+import signal
+import sys
+import threading
+import os
+
+def readlnCR(ser):
+	r = []
+	while (True):
+		c = ser.read()
+		if (c==b'\r' or c==b'\n'):
+			return r;
+		else:
+			r.append(c)
+
+def decode(blist):
+	out = ""
+	for i in blist:
+		c = i.decode('utf-8')
+		if (c!='\r' and c!='\n'):
+			out += c
+	return out
+
+try:
+	sys.argv[1]
+	sys.argv[2]
+except:
+	print('Usage: "cereal <port> <baudrate>"')
+	exit(1)
+
+try:
+	ser = serial.Serial(sys.argv[1], int(sys.argv[2]))
+except:
+	print("That device doesn't seem to exist or work with serial commands.")
+	exit(1)
+
+def signal_handler(signal, frame):
+	print('\nExiting.')
+	os._exit(0)
+
+signal.signal(signal.SIGINT, signal_handler)
+
+def othread():
+	while (True):
+		m = decode(readlnCR(ser))
+		if (m != ""):
+			print(m)
+
+def ithread():
+	while (True):
+		ins = input()
+		ser.write(ins)
+
+ot = threading.Thread(target=othread)
+ot.start()
+
+#it = threading.Thread(target=ithread)
+#it.start()
+
+ithread()
