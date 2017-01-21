@@ -56,7 +56,4 @@ def ithread():
 ot = threading.Thread(target=othread)
 ot.start()
 
-#it = threading.Thread(target=ithread)
-#it.start()
-
 ithread()
