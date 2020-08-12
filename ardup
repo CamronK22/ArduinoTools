@@ -1,4 +1,0 @@
-#!/bin/zsh
-
-#arduino ./$1 --verify
-arduino ./$1 --upload
