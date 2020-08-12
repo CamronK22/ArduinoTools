@@ -1,3 +1,0 @@
-#!/bin/bash
-
-exec arduino ./$1 --verify
